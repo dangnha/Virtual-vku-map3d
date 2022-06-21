@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>Display buildings in 3D</title>
+<meta name="viewport" content="initial-scale=1,maximum-scale=1,user-scalable=no">
+<link href="https://api.mapbox.com/mapbox-gl-js/v2.8.2/mapbox-gl.css" rel="stylesheet">
+<script src="https://api.mapbox.com/mapbox-gl-js/v2.8.2/mapbox-gl.js"></script>
+<style>
+body { margin: 0; padding: 0; }
+#mapp { position: absolute; top: 0; bottom: 0; width: 100%; }
+</style>
+<style type="text/css">
+    #info {
+    display: table;
+    position: relative;
+    margin: 0px auto;
+    word-wrap: anywhere;
+    white-space: pre-wrap;
+    padding: 10px;
+    border: none;
+    border-radius: 3px;
+    font-size: 12px;
+    text-align: center;
+    color: #222;
+    background: #fff;
+    }
+    </style>
+</head>
+<body>
+<div id="mapp"></div>
+<button>hii</button>
+<!-- <pre id="info"></pre> -->
+<script>
+	// TO MAKE THE MAP APPEAR YOU MUST
+	// ADD YOUR ACCESS TOKEN FROM
+	// https://account.mapbox.com
+	mapboxgl.accessToken = 'pk.eyJ1IjoiY2FvY29zdnNwMTIzIiwiYSI6ImNsM3hzcHJ5ZjM3cXYzYm9laHB2NjQzODEifQ.ep_7VmH93VvVqh1CWGLdtA';
+const mapp = new mapboxgl.Map({
+style: 'mapbox://styles/mapbox/light-v10',
+center: [108.252, 15.9752],
+zoom: 18,
+pitch: 45,
+bearing: -17.6,
+container: 'mapp',
+antialias: true
+});
+ 
+mapp.on('load', () => {
+// Insert the layer beneath any symbol layer.
+const layers = mapp.getStyle().layers;
+const labelLayerId = layers.find(
+(layer) => layer.type === 'symbol' && layer.layout['text-field']
+).id;
+ 
+// The 'building' layer in the Mapbox Streets
+// vector tileset contains building height data
+// from OpenStreetMap.
+mapp.addLayer(
+{
+'id': 'add-3d-buildings',
+'source': 'composite',
+'source-layer': 'building',
+'filter': ['==', 'extrude', 'true'],
+'type': 'fill-extrusion',
+'minzoom': 15,
+'paint': {
+'fill-extrusion-color': '#aaa',
+ 
+// Use an 'interpolate' expression to
+// add a smooth transition effect to
+// the buildings as the user zooms in.
+'fill-extrusion-height': [
+'interpolate',
+['linear'],
+['zoom'],
+15,
+0,
+15.05,
+['get', 'height']
+],
+'fill-extrusion-base': [
+'interpolate',
+['linear'],
+['zoom'],
+15,
+0,
+15.05,
+['get', 'min_height']
+],
+'fill-extrusion-opacity': 0.6
+}
+},
+labelLayerId
+);
+});
+</script>
+<script>
+    mapp.on('mousemove', (e) => {
+document.getElementById('info').innerHTML =
+
+JSON.stringify(e.point) +
+'<br />' +
+
+JSON.stringify(e.lngLat.wrap());
+});
+</script>
+ 
+</body>
+</html>

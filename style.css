@@ -1,0 +1,28 @@
+body {
+    margin: 0;
+  }
+  html, body, #map {
+    height: 100%;
+  }
+  @media only screen and (max-width:375px) {
+.leaflet-control-zoom-in{
+  width: 76px;
+    height: 55px;
+
+}
+.leaflet-control-zoom-out{
+  width: 76px;
+    height: 55px;
+
+}
+.leaflet-bar-part .leaflet-bar-part-single{
+  width: 76px;
+  height: 55px;
+}
+.leaflet-control-locate-location-arrow{
+  margin: 19px;
+}
+  }
+  @media only screen and (min-width: 768px) {
+    
+  }
